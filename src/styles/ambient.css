@@ -1,0 +1,41 @@
+/* Ambient background: navy / indigo / violet / sky glows, light particles, thin geometric shapes. Low contrast on purpose. */
+.ambient { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; --dot: 255,255,255; }
+.ambient__glow { position: absolute; border-radius: 50%; animation: amb-drift 26s ease-in-out infinite alternate; }
+.ambient__dot { position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(var(--dot), .95), rgba(var(--dot), 0) 70%); opacity: 0; animation: amb-float 16s ease-in-out infinite; }
+.ambient__shape { position: absolute; border: 1.5px solid rgba(255,255,255,.14); }
+.ambient__shape--ring-1 { width: 300px; height: 300px; right: -90px; top: -70px; border-radius: 50%; }
+.ambient__shape--square-1 { width: 120px; height: 120px; left: 5%; bottom: 10%; border-radius: 26px; animation: amb-spin 70s linear infinite; }
+@keyframes amb-drift { from { transform: translate(-3%, -2%) scale(1); } to { transform: translate(4%, 3%) scale(1.08); } }
+@keyframes amb-float { 0% { opacity: 0; transform: translateY(14px); } 25% { opacity: .75; } 75% { opacity: .55; } 100% { opacity: 0; transform: translateY(-34px); } }
+@keyframes amb-spin { to { transform: rotate(360deg); } }
+
+/* hero (on dark navy) */
+.ambient__glow--a { width: 560px; height: 560px; right: -140px; top: -200px; background: radial-gradient(circle, rgba(139,92,246,.4), transparent 68%); }
+.ambient__glow--b { width: 520px; height: 520px; left: -160px; bottom: -240px; background: radial-gradient(circle, rgba(56,189,248,.26), transparent 68%); animation-delay: -9s; }
+
+/* rest of home page (light surfaces): barely-there tints */
+.ambient--page { --dot: 99,102,241; }
+.ambient--page .ambient__dot { animation-name: amb-float-soft; }
+@keyframes amb-float-soft { 0% { opacity: 0; transform: translateY(14px); } 30% { opacity: .5; } 75% { opacity: .35; } 100% { opacity: 0; transform: translateY(-34px); } }
+.ambient__glow--c { width: 640px; height: 640px; right: -240px; top: 20%; background: radial-gradient(circle, rgba(99,102,241,.13), transparent 68%); }
+.ambient__glow--d { width: 600px; height: 600px; left: -260px; top: 50%; background: radial-gradient(circle, rgba(56,189,248,.12), transparent 68%); animation-delay: -8s; }
+.ambient__glow--e { width: 560px; height: 560px; right: -200px; top: 78%; background: radial-gradient(circle, rgba(139,92,246,.12), transparent 68%); animation-delay: -15s; }
+.ambient__shape--ring-2 { width: 220px; height: 220px; left: -70px; top: 30%; border-radius: 50%; border-color: rgba(99,102,241,.14); }
+[data-theme="dark"] .ambient--page { --dot: 165,180,252; }
+[data-theme="dark"] .ambient__glow--c, [data-theme="dark"] .ambient__glow--e { opacity: 1.5; }
+[data-theme="dark"] .ambient__shape--ring-2 { border-color: rgba(165,180,252,.18); }
+
+/* page wrapper: keep content above the decoration */
+.home { position: relative; overflow-x: clip; }
+.home > section, .home > .container { position: relative; z-index: 1; }
+.home > .ambient--page { z-index: 0; }
+
+@media (max-width: 760px) {
+  .ambient__shape, .ambient--page .ambient__dot:nth-child(n+5), .ambient--hero .ambient__dot:nth-child(n+8) { display: none; }
+  .ambient__glow--a, .ambient__glow--b { width: 380px; height: 380px; }
+  .ambient__glow--c, .ambient__glow--d, .ambient__glow--e { width: 380px; height: 380px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ambient__glow, .ambient__shape { animation: none; }
+  .ambient__dot { animation: none; opacity: .35; }
+}
