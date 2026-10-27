@@ -15,9 +15,9 @@ import '../styles/home.css';
  */
 export default function Home({ alumni = alumniData, events = eventsData, posts = postsData, stats, headline, intro }) {
   const shownStats = stats || [
-    { label: 'Alumni in the directory', value: alumni.length },
-    { label: 'Upcoming events', value: events.length },
-    { label: 'Articles published', value: posts.length },
+    { label: 'Sample alumni profiles', value: alumni.length },
+    { label: 'Sample events', value: events.length },
+    { label: 'Sample articles', value: posts.length },
   ];
   return (
     <div className="home">
@@ -28,12 +28,12 @@ export default function Home({ alumni = alumniData, events = eventsData, posts =
         <AmbientBackground variant="hero" />
         <div className="container hero__grid">
           <div className="hero__enter">
-            <span className="eyebrow">Alumni Portal</span>
-            <h1>{headline || 'Stay connected to the people and place that shaped you'}</h1>
-            <p>{intro || 'Find classmates, join events, share your story and open doors for the next generation of graduates.'}</p>
+            <span className="eyebrow">Maharana Pratap Group of Institutions</span>
+            <h1>{headline || 'Connecting Our Alumni. Inspiring the Next Generation.'}</h1>
+            <p>{intro || 'Reconnect with your college community, celebrate achievements, discover opportunities, and build meaningful professional relationships.'}</p>
             <div className="hero__cta">
-              <Link to="/login" className="btn btn--join">Join the network <Icon name="arrow" size={18} /></Link>
-              <Link to="/alumni" className="btn btn--on-dark">Browse alumni</Link>
+              <Link to="/login" className="btn btn--join">Join the Community <Icon name="arrow" size={18} /></Link>
+              <Link to="/alumni" className="btn btn--on-dark">Explore Alumni</Link>
             </div>
           </div>
           <div className="hero__panel hero__enter" style={{ animationDelay: '.12s' }}>
@@ -104,7 +104,7 @@ export default function Home({ alumni = alumniData, events = eventsData, posts =
       <section className="section--tight">
         <div className="container">
           <div className="cta-band">
-            <div><h2>Ready to reconnect?</h2><p>Log in to update your profile and join the community.</p></div>
+            <div><h2>Ready to reconnect?</h2><p>Try the demo: sign in to explore the alumni and administrator areas.</p></div>
             <Link to="/login" className="btn btn--light">Log in</Link>
           </div>
         </div>

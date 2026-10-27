@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Icon } from './ui';
+import BrandLogo from './BrandLogo';
 import '../styles/navbar.css';
 
 // Replace with the real paths used in your App.jsx routes.
@@ -8,13 +9,13 @@ const DEFAULT_LINKS = [
   { to: '/', label: 'Home', end: true },
   { to: '/alumni', label: 'Alumni' },
   { to: '/events', label: 'Events' },
-  { to: '/blog', label: 'Blog' },
+  { to: '/blog', label: 'Articles' },
   { to: '/gallery', label: 'Gallery' },
   { to: '/community', label: 'Community' },
 ];
 
 export default function Navbar({
-  brand = 'Alumni Portal',
+  brand = 'MPGI',
   links = DEFAULT_LINKS,
   user = null,            // pass your logged-in user object, or null
   dashboardPath = '/dashboard',
@@ -35,9 +36,9 @@ export default function Navbar({
     <header className="nav">
       <a className="skip-link" href="#main">Skip to content</a>
       <div className="container nav__inner">
-        <Link to="/" className="nav__brand">
-          <span className="nav__logo" aria-hidden="true">{brand.charAt(0)}</span>
-          {brand}
+        <Link to="/" className="nav__brand" aria-label="MPGI Alumni Portal, home">
+          <BrandLogo size={46} priority />
+          <span className="nav__brandtext"><strong>MPGI Alumni Portal</strong><small>Maharana Pratap Group of Institutions</small></span>
         </Link>
 
         <button className="nav__toggle" onClick={() => setOpen((v) => !v)}

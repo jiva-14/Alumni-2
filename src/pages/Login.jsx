@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Icon } from '../components/ui';
+import BrandLogo from '../components/BrandLogo';
 import PasswordEyes from '../components/PasswordEyes';
 import AmbientBackground from '../components/AmbientBackground';
 import { getEyeState } from '../utils/eyeState';
@@ -50,9 +51,9 @@ export default function Login() {
       </div>
       <div className="auth__wrap">
         <aside className="auth__aside">
-          <span className="auth__logo" aria-hidden="true">A</span>
-          <h2>Welcome to your alumni network</h2>
-          <p>Reconnect with classmates, share your story and discover opportunities.</p>
+          <BrandLogo size={84} priority />
+          <h2>MPGI Alumni Portal</h2>
+          <p>Maharana Pratap Group of Institutions. Reconnect with classmates, share your story and discover opportunities.</p>
           <ul>
             <li><Icon name="users" size={18} /> Alumni directory</li>
             <li><Icon name="calendar" size={18} /> Reunions &amp; events</li>
@@ -60,7 +61,7 @@ export default function Login() {
           </ul>
         </aside>
         <div className="auth__card">
-          <h1>Sign in</h1>
+          <h1>Sign in to the demo</h1>
           <p className="auth__sub">Choose how you want to continue.</p>
           <form onSubmit={onSubmit} noValidate>
             <div className="auth__roles" role="radiogroup" aria-label="Sign in as">

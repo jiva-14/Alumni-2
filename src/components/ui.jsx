@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useId, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 const PATHS = {
@@ -130,24 +130,46 @@ export function PreviewNote({ children = 'Preview only: this screen works with s
 }
 
 /**
- * Accessible modal. Closes on Escape and backdrop click; focuses the dialog on open.
+ * Accessible modal: traps Tab focus, closes on Escape / backdrop click, locks page scroll,
+ * and returns focus to the element that opened it.
  */
+const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
 export function Modal({ open, title, onClose, children, footer }) {
   const ref = useRef(null);
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
+  const titleId = useId();
   useEffect(() => {
     if (!open) return undefined;
-    const onKey = (e) => e.key === 'Escape' && onClose?.();
+    const opener = document.activeElement;
+    const node = ref.current;
+    const first = node?.querySelector('input,select,textarea') || node?.querySelector(FOCUSABLE) || node;
+    first?.focus();
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e) => {
+      if (e.key === 'Escape') { e.stopPropagation(); closeRef.current?.(); return; }
+      if (e.key !== 'Tab' || !node) return;
+      const items = [...node.querySelectorAll(FOCUSABLE)].filter((el) => el.offsetParent !== null);
+      if (!items.length) { e.preventDefault(); return; }
+      const a = items[0], z = items[items.length - 1];
+      if (e.shiftKey && (document.activeElement === a || document.activeElement === node)) { e.preventDefault(); z.focus(); }
+      else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
+    };
     document.addEventListener('keydown', onKey);
-    ref.current?.focus();
-    return () => document.removeEventListener('keydown', onKey);
-  }, [open, onClose]);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+      if (opener && document.contains(opener)) opener.focus?.();
+    };
+  }, [open]);
   if (!open) return null;
   return (
     <div className="modal-backdrop" onMouseDown={(e) => e.target === e.currentTarget && onClose?.()}>
-      <div className="modal" role="dialog" aria-modal="true" aria-label={title} tabIndex={-1} ref={ref}>
+      <div className="modal" role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1} ref={ref}>
         <div className="modal__head">
-          <h2>{title}</h2>
-          <button className="btn btn--ghost btn--sm" onClick={onClose} aria-label="Close dialog"><Icon name="close" /></button>
+          <h2 id={titleId}>{title}</h2>
+          <button type="button" className="btn btn--ghost btn--sm" onClick={onClose} aria-label="Close dialog"><Icon name="close" /></button>
         </div>
         {children}
         {footer && <div className="modal__foot">{footer}</div>}
@@ -157,17 +179,31 @@ export function Modal({ open, title, onClose, children, footer }) {
 }
 
 /**
- * columns: [{ key, header, render?(row) }]   rows: array of objects
+ * columns: [{ key, header, render?(row), sortable? }]   rows: array of objects
  * renderActions?(row) -> node, shown in the last column.
+ * Pass `sort` ({ key, dir }) and `onSort(key)` to make headers sortable (aria-sort is set for assistive tech).
  */
-export function DataTable({ columns, rows = [], renderActions, rowKey = 'id', emptyTitle = 'No records found', emptyMessage }) {
+export function DataTable({ columns, rows = [], renderActions, rowKey = 'id', emptyTitle = 'No records found', emptyMessage, sort, onSort, caption }) {
   if (!rows.length) return <EmptyState title={emptyTitle} message={emptyMessage} />;
   return (
-    <div className="table-wrap">
+    <div className="table-wrap" tabIndex={0} role="region" aria-label={caption || 'Data table'}>
       <table className="table">
         <thead>
           <tr>
-            {columns.map((c) => <th key={c.key} scope="col">{c.header}</th>)}
+            {columns.map((c) => {
+              const canSort = onSort && c.sortable !== false;
+              const active = sort?.key === c.key;
+              return (
+                <th key={c.key} scope="col" aria-sort={active ? (sort.dir === 'asc' ? 'ascending' : 'descending') : undefined}>
+                  {canSort ? (
+                    <button type="button" className={`th-sort${active ? ' on' : ''}`} onClick={() => onSort(c.key)}>
+                      {c.header}
+                      <span className="th-sort__mark" aria-hidden="true">{active ? (sort.dir === 'asc' ? '▲' : '▼') : '↕'}</span>
+                    </button>
+                  ) : c.header}
+                </th>
+              );
+            })}
             {renderActions && <th scope="col"><span className="sr-only">Actions</span></th>}
           </tr>
         </thead>

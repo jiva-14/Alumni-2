@@ -1,16 +1,18 @@
 import { Link } from 'react-router-dom';
 import { StatCard, StatusBadge } from '../../components/ui';
 import { useAuth } from '../../context/AuthContext';
-import { activities, events, myArticles, opportunities } from '../../data/mockData';
+import { activities, alumni, events, myArticles, opportunities } from '../../data/mockData';
+import { completion, loadProfile } from '../../utils/profile';
 
-const COMPLETION = 70; // sample value; derive from the real profile fields later
 
 export default function AlumniDashboard() {
   const { user } = useAuth();
+  const c = completion(loadProfile(alumni[0]));
+  const missing = c.items.filter((i) => !i.done);
   return (
     <>
       <div className="dash-head">
-        <div><h1>Welcome, {user?.name}</h1><p>Here is what is happening in your alumni network.</p></div>
+        <div><h1>Welcome, {user?.name}</h1><p>Demo dashboard: sample activity from the MPGI alumni network.</p></div>
         <Link to="/member/articles" className="btn btn--primary">Write an article</Link>
       </div>
 
@@ -35,8 +37,8 @@ export default function AlumniDashboard() {
         <div className="stack">
           <section className="card panel" aria-labelledby="completion">
             <h2 id="completion" style={{ fontSize: '1.1rem' }}>Profile completion</h2>
-            <div className="progress" role="progressbar" aria-valuenow={COMPLETION} aria-valuemin={0} aria-valuemax={100} aria-label="Profile completion"><span style={{ width: `${COMPLETION}%` }} /></div>
-            <p style={{ margin: '.75rem 0', color: 'var(--muted)' }}>{COMPLETION}% complete. Add achievements to finish.</p>
+            <div className="progress" role="progressbar" aria-valuenow={c.percent} aria-valuemin={0} aria-valuemax={100} aria-label="Profile completion"><span style={{ width: `${c.percent}%` }} /></div>
+            <p style={{ margin: '.75rem 0', color: 'var(--muted)' }}>{c.percent}% complete ({c.done} of {c.total} fields). {missing.length ? `Still missing: ${missing.map((m) => m.label.toLowerCase()).join(', ')}.` : 'Your profile is complete.'}</p>
             <Link to="/member/profile" className="btn btn--outline btn--sm">Update profile</Link>
           </section>
           <section className="card panel" aria-labelledby="act">
