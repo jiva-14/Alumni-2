@@ -1,13 +1,17 @@
 import { useId, useState } from 'react';
 import { alumni, departments } from '../../data/mockData';
+import { useToast } from '../../context/ToastContext';
+import { completion, loadProfile, PROFILE_KEY } from '../../utils/profile';
 
 const initial = alumni[0]; // sample profile; load the signed-in user's profile here
 
 export default function MyProfile() {
   const uid = useId();
-  const [form, setForm] = useState({ name: initial.name, email: initial.email, graduationYear: initial.graduationYear, department: initial.department, currentRole: initial.currentRole, company: initial.company, location: initial.location, bio: initial.bio });
+  const [form, setForm] = useState(() => loadProfile({ name: initial.name, email: initial.email, graduationYear: initial.graduationYear, department: initial.department, currentRole: initial.currentRole, company: initial.company, location: initial.location, bio: initial.bio }));
   const [errors, setErrors] = useState({});
   const [saved, setSaved] = useState(false);
+  const toast = useToast();
+  const pct = completion(form);
   const set = (k) => (e) => { setSaved(false); setForm((s) => ({ ...s, [k]: e.target.value })); };
 
   const submit = (e) => {
@@ -16,7 +20,9 @@ export default function MyProfile() {
     if (!form.name.trim()) errs.name = 'Name is required';
     if (!/^\S+@\S+\.\S+$/.test(form.email)) errs.email = 'Enter a valid email address';
     setErrors(errs);
-    if (!Object.keys(errs).length) setSaved(true); // call your API here
+    if (Object.keys(errs).length) { toast.error('Please fix the highlighted fields.'); return; }
+    try { localStorage.setItem(PROFILE_KEY, JSON.stringify(form)); setSaved(true); toast.success('Profile saved in this browser (demo).'); }
+    catch { toast.error('Could not save to browser storage.'); }
   };
 
   const field = ({ name, label, full, children, type = 'text' }) => (
@@ -30,8 +36,9 @@ export default function MyProfile() {
   return (
     <>
       <div className="dash-head"><div><h1>My profile</h1><p>Keep your details up to date so classmates can find you.</p></div></div>
+      <div className="card panel" style={{ marginBottom: 'var(--space-4)' }}><strong>Profile completion: {pct.percent}%</strong> <span style={{ color: 'var(--muted)' }}>({pct.done} of {pct.total} fields)</span><div className="progress" role="progressbar" aria-valuenow={pct.percent} aria-valuemin={0} aria-valuemax={100} aria-label="Profile completion"><span style={{ width: `${pct.percent}%` }} /></div></div>
       <form className="card panel" onSubmit={submit} noValidate>
-        {saved && <div className="alert alert--success" role="status" style={{ marginBottom: 'var(--space-4)' }}>Profile saved.</div>}
+        {saved && <div className="alert alert--success" role="status" style={{ marginBottom: 'var(--space-4)' }}>Saved in this browser only. This is demo data and is not verified by the institution.</div>}
         <div className="form-grid">
           {field({ name: 'name', label: 'Full name' })}
           {field({ name: 'email', label: 'Email', type: 'email' })}

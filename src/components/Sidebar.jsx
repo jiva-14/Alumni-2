@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { Icon } from './ui';
+import BrandLogo from './BrandLogo';
 import '../styles/dashboard.css';
 
 const DESKTOP = '(min-width: 861px)';
@@ -24,7 +25,7 @@ const readCollapsed = () => {
  * Desktop: collapses to an icon rail with tooltips. Mobile: slide-in drawer.
  */
 export default function Sidebar({
-  title = 'Dashboard', brand = 'Alumni Portal', sections, links = [], user, bellTo, bellCount = 0, notifications = [], profileTo, settingsTo, onLogout, children,
+  title = 'Dashboard', brand = 'MPGI Alumni Portal', sections, links = [], user, bellTo, bellCount = 0, notifications = [], profileTo, settingsTo, onLogout, children,
 }) {
   const groups = useMemo(() => sections ?? [{ links }], [sections, links]);
   const flat = useMemo(() => groups.flatMap((g) => g.links), [groups]);
@@ -104,7 +105,7 @@ export default function Sidebar({
       <aside id="sidebar" className={`sidebar${open ? ' open' : ''}${collapsed ? ' collapsed' : ''}`} aria-label={`${title} navigation`}>
         <div className="sidebar__scroll">
           <Link to="/" className="sidebar__brand" aria-label={`${brand} home`}>
-            <span className="sidebar__logo" aria-hidden="true">{brand.charAt(0)}</span>
+            <BrandLogo size={40} decorative />
             <span className="sidebar__brandtext"><strong>{brand}</strong><small>{title} console</small></span>
           </Link>
 

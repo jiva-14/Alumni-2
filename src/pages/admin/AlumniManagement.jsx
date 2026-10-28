@@ -11,7 +11,7 @@ export default function AlumniManagement() {
       fields={[
         { name: 'name', label: 'Full name', required: true },
         { name: 'email', label: 'Email', type: 'email', required: true },
-        { name: 'graduationYear', label: 'Graduation year', type: 'number', required: true },
+        { name: 'graduationYear', label: 'Graduation year', type: 'number', required: true, min: 1990, max: 2100 },
         { name: 'department', label: 'Department', type: 'select', options: departments, required: true },
         { name: 'currentRole', label: 'Current role' },
         { name: 'company', label: 'Company' },

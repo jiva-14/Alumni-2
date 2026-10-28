@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import PageHeader from '../components/PageHeader';
 import SearchBar from '../components/SearchBar';
 import AlumniCard from '../components/AlumniCard';
@@ -9,61 +9,92 @@ import '../styles/directory.css';
 const yearOf = (a) => a.graduationYear || a.batch || a.year;
 const deptOf = (a) => a.department || a.branch;
 const nameOf = (a) => a.name || a.fullName || '';
+const roleOf = (a) => a.currentRole || a.role || '';
+const PAGE = 6;
+const uniq = (list) => [...new Set(list.filter(Boolean))];
 
 /**
- * Presentational directory with search, filters and sorting.
- * Feed it your existing data: <AlumniDirectory alumni={list} loading={isLoading} error={err} />
+ * Alumni directory: search, department / year / location filters, sorting and load-more.
+ * Every control composes with the others; changing one never resets another.
+ * Sample data is fictional and is NOT a verified list of real alumni.
  */
 export default function AlumniDirectory({ alumni = alumniData, loading = false, error = null, onRetry }) {
   const [q, setQ] = useState('');
   const [year, setYear] = useState('');
   const [dept, setDept] = useState('');
+  const [place, setPlace] = useState('');
   const [sort, setSort] = useState('name');
+  const [shown, setShown] = useState(PAGE);
 
-  const years = useMemo(() => [...new Set(alumni.map(yearOf).filter(Boolean))].sort().reverse(), [alumni]);
-  const depts = useMemo(() => [...new Set(alumni.map(deptOf).filter(Boolean))].sort(), [alumni]);
+  const years = useMemo(() => uniq(alumni.map(yearOf)).sort().reverse(), [alumni]);
+  const depts = useMemo(() => uniq(alumni.map(deptOf)).sort(), [alumni]);
+  const places = useMemo(() => uniq(alumni.map((a) => a.location)).sort(), [alumni]);
 
   const results = useMemo(() => {
     const term = q.trim().toLowerCase();
     return alumni
       .filter((a) => !year || String(yearOf(a)) === year)
       .filter((a) => !dept || deptOf(a) === dept)
-      .filter((a) => !term || [nameOf(a), a.company, a.currentRole, a.role, deptOf(a)].filter(Boolean).join(' ').toLowerCase().includes(term))
-      .sort((a, b) => (sort === 'year' ? String(yearOf(b)).localeCompare(String(yearOf(a))) : nameOf(a).localeCompare(nameOf(b))));
-  }, [alumni, q, year, dept, sort]);
+      .filter((a) => !place || a.location === place)
+      .filter((a) => !term || [nameOf(a), a.company, roleOf(a), deptOf(a), a.location].filter(Boolean).join(' ').toLowerCase().includes(term))
+      .sort((a, b) => (sort === 'year' ? String(yearOf(b)).localeCompare(String(yearOf(a))) || nameOf(a).localeCompare(nameOf(b))
+        : sort === 'company' ? String(a.company || '').localeCompare(String(b.company || '')) || nameOf(a).localeCompare(nameOf(b))
+        : nameOf(a).localeCompare(nameOf(b))));
+  }, [alumni, q, year, dept, place, sort]);
+
+  useEffect(() => setShown(PAGE), [q, year, dept, place, sort]);
+
+  const active = [
+    q.trim() && { label: `“${q.trim()}”`, clear: () => setQ('') },
+    year && { label: `Class of ${year}`, clear: () => setYear('') },
+    dept && { label: dept, clear: () => setDept('') },
+    place && { label: place, clear: () => setPlace('') },
+  ].filter(Boolean);
+  const clearAll = () => { setQ(''); setYear(''); setDept(''); setPlace(''); };
+  const visible = results.slice(0, shown);
+
+  const sel = (value, set, label, all, opts, fmt = (x) => x) => opts.length > 0 && (
+    <select className="select" value={value} onChange={(e) => set(e.target.value)} aria-label={label}>
+      <option value="">{all}</option>{opts.map((o) => <option key={o} value={o}>{fmt(o)}</option>)}
+    </select>
+  );
 
   return (
     <>
-      <PageHeader title="Alumni directory" subtitle="Find classmates and fellow graduates." crumbs={[{ to: '/', label: 'Home' }, { label: 'Alumni' }]} />
+      <PageHeader title="Alumni directory" subtitle="Find classmates and fellow graduates of Maharana Pratap Group of Institutions." crumbs={[{ to: '/', label: 'Home' }, { label: 'Alumni' }]} />
       <div className="section">
         <div className="container">
-          <div className="toolbar">
-            <SearchBar value={q} onChange={setQ} placeholder="Search by name, company or role" label="Search alumni" />
-            {years.length > 0 && (
-              <select className="select" value={year} onChange={(e) => setYear(e.target.value)} aria-label="Filter by graduation year">
-                <option value="">All years</option>{years.map((y) => <option key={y} value={y}>{y}</option>)}
-              </select>
-            )}
-            {depts.length > 0 && (
-              <select className="select" value={dept} onChange={(e) => setDept(e.target.value)} aria-label="Filter by department">
-                <option value="">All departments</option>{depts.map((d) => <option key={d} value={d}>{d}</option>)}
-              </select>
-            )}
+          <p className="demo-note" role="note">Sample profiles shown here are fictional demonstration records, not verified alumni.</p>
+          <div className="toolbar" role="search">
+            <SearchBar value={q} onChange={setQ} placeholder="Search by name, company, role or city" label="Search alumni" />
+            {sel(dept, setDept, 'Filter by department', 'All departments', depts)}
+            {sel(year, setYear, 'Filter by graduation year', 'All years', years)}
+            {sel(place, setPlace, 'Filter by location', 'All locations', places)}
             <select className="select" value={sort} onChange={(e) => setSort(e.target.value)} aria-label="Sort alumni">
-              <option value="name">Sort: Name</option><option value="year">Sort: Newest class</option>
+              <option value="name">Sort: Name (A–Z)</option><option value="year">Sort: Newest class</option><option value="company">Sort: Company</option>
             </select>
           </div>
+
+          {active.length > 0 && (
+            <div className="chips" aria-label="Active filters">
+              {active.map((c) => <span className="chip" key={c.label}>{c.label}<button type="button" onClick={c.clear} aria-label={`Remove filter ${c.label}`}>×</button></span>)}
+              <button type="button" className="link-btn" onClick={clearAll}>Clear all</button>
+            </div>
+          )}
 
           {loading ? <CardSkeletons />
             : error ? <ErrorState message={typeof error === 'string' ? error : undefined} onRetry={onRetry} />
             : results.length === 0 ? (
               <EmptyState icon="search" title="No alumni match your search"
-                message="Try a different name or clear the filters."
-                action={<button className="btn btn--outline btn--sm" onClick={() => { setQ(''); setYear(''); setDept(''); }}>Clear filters</button>} />
+                message="Try a different name or remove some filters."
+                action={<button type="button" className="btn btn--outline btn--sm" onClick={clearAll}>Clear all filters</button>} />
             ) : (
               <>
-                <p className="result-count" aria-live="polite">{results.length} alumni found</p>
-                <div className="card-grid">{results.map((a) => <AlumniCard key={a.id ?? a._id} alumni={a} />)}</div>
+                <p className="result-count" aria-live="polite">Showing {visible.length} of {results.length} alumni</p>
+                <div className="card-grid">{visible.map((a) => <AlumniCard key={a.id ?? a._id} alumni={a} />)}</div>
+                {shown < results.length && (
+                  <div className="dir-foot"><button type="button" className="btn btn--outline" onClick={() => setShown((n) => n + PAGE)}>Load more alumni</button></div>
+                )}
               </>
             )}
         </div>

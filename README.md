@@ -50,3 +50,14 @@ Replace imports from `src/data/mockData.js` with API calls, replace `login()` in
 - **Join the network** button: `.btn--join` (purple-blue gradient, white text, white outline, hover shimmer). Also fixed the white `.btn--light` button turning white-on-white in dark mode, and the "Browse alumni" button (`.btn--on-dark`) becoming unreadable on hover.
 - **Ambient background**: `components/AmbientBackground.jsx` + `styles/ambient.css` (soft navy/indigo/violet/sky glows, a few light particles, thin geometric shapes; used on the home page and login; hidden/reduced on small screens, off with reduced motion). The earlier leaf decoration was removed.
 - **Login eyes**: `components/PasswordEyes.jsx`, logic in `utils/eyeState.js`. Eyes close while the password field (or its show/hide button) is focused and the password is hidden; they reopen on blur, and stay open (glancing down) while the password is shown.
+
+## MPGI branding and upgrade (latest)
+- **Official logo**: `src/assets/mpgi-logo-original.png` is the supplied image, untouched. `src/assets/mpgi-logo.png` is a 488 px circular cut-out of it (transparent corners, text intact), used by `components/BrandLogo.jsx` in the navbar, footer, sidebar (alumni and admin), and login. Favicon and touch icon are in `public/`. The source image is only 550 px wide, so keep the logo at or below ~240 CSS px; a larger original (SVG or 1000 px+) would be sharper if you have one.
+- **Design tokens**: `src/styles/brand.css` (loaded after `theme.css`) re-points the existing variables at the institutional palette: navy `#14264A`, blue `#294B91`, gold `#FFC928` accent, purple `#6554C0` secondary. Dark mode uses the existing `data-theme` system.
+- **Admin tables** (`ManageTable.jsx`, used by 11 screens): sortable columns, input-type validation (email, number range, date, URL, length), unique stable IDs, discard-changes prompt, delete confirmation, Clear filters, and `localStorage` persistence with "Reset to sample data". Browser storage is a demo only: not shared, not secure, not a database.
+- **Modal**: focus trap, focus restored on close, page scroll locked, labelled by its title.
+- **Alumni directory**: department, year and location filters, sort, filter chips, Clear all, and Load more; all controls compose.
+- **Profile**: completion is computed from 8 fields; edits are saved to browser storage (demo).
+
+## Known limitations (frontend-only)
+No backend: login is a preview, saved data is per-browser, no email or server writes occur. Not yet done: admin pages other than the shared table were not redesigned individually, gallery lightbox, event registration flow, automated tests, Lighthouse run.
