@@ -1,7 +1,11 @@
 import { useMemo, useState } from 'react';
 import SearchBar from '../../components/SearchBar';
 import { EmptyState } from '../../components/ui';
-import { opportunities } from '../../data/mockData';
+import { PersonCell } from '../../components/Avatar';
+import { alumni, opportunities } from '../../data/mockData';
+import { photoFor } from '../../utils/profile';
+
+const byName = Object.fromEntries(alumni.map((a) => [a.name, a]));
 
 const TYPES = ['All', ...new Set(opportunities.map((o) => o.type))];
 
@@ -29,7 +33,7 @@ export default function Opportunities() {
               <h3>{o.title}</h3>
               <p style={{ margin: '0 0 .5rem', color: 'var(--navy-800)', fontWeight: 600 }}>{o.company}</p>
               <p style={{ color: 'var(--muted)' }}>{o.description}</p>
-              <p style={{ fontSize: '.85rem', color: 'var(--muted)' }}>Shared by {o.postedBy}</p>
+              <p className="shared-by"><span>Shared by</span><PersonCell name={o.postedBy} src={photoFor(byName[o.postedBy])} size="xs" /></p>
               <button className={`btn btn--sm ${applied.includes(o.id) ? 'btn--outline' : 'btn--primary'}`} disabled={applied.includes(o.id)}
                 onClick={() => setApplied((a) => [...a, o.id])}>{applied.includes(o.id) ? 'Interest sent' : 'I’m interested'}</button>
             </article>

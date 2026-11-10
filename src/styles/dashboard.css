@@ -18,7 +18,6 @@
 .sidebar__scroll { height: 100%; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; padding: var(--space-4) 0; scrollbar-width: thin; }
 
 .sidebar__brand { display: flex; align-items: center; gap: .75rem; padding: .35rem 1.35rem var(--space-4); text-decoration: none !important; color: var(--navy-900); min-height: 60px; }
-.sidebar__logo { width: 38px; height: 38px; border-radius: 11px; flex-shrink: 0; display: grid; place-items: center; background: var(--grad); color: #fff; font-weight: 800; box-shadow: 0 6px 14px rgba(99,102,241, .32); }
 .sidebar__brandtext { display: grid; line-height: 1.2; white-space: nowrap; overflow: hidden; transition: opacity .2s, max-width .3s var(--ease); max-width: 180px; }
 .sidebar__brandtext strong { font-size: 1rem; font-weight: 700; letter-spacing: -.01em; }
 .sidebar__brandtext small { color: var(--muted); font-size: .72rem; font-weight: 500; }

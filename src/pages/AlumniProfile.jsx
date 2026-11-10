@@ -1,9 +1,9 @@
 import { Link, useParams } from 'react-router-dom';
 import PageHeader from '../components/PageHeader';
 import { EmptyState } from '../components/ui';
+import Avatar from '../components/Avatar';
 import { alumni } from '../data/mockData';
-
-const initials = (n = '') => n.split(' ').slice(0, 2).map((w) => w[0]).join('');
+import { photoFor } from '../utils/profile';
 
 export default function AlumniProfile() {
   const { id } = useParams();
@@ -27,7 +27,7 @@ export default function AlumniProfile() {
           <div className="stack">
             <section className="card card--pad">
               <div className="profile-top">
-                <div className="avatar avatar--xl" aria-hidden="true">{initials(person.name)}</div>
+                <Avatar name={person.name} src={photoFor(person)} size="xl" label={`Profile picture of ${person.name}`} />
                 <div className="chips">
                   <span className="badge">Class of {person.graduationYear}</span>
                   <span className="badge badge--info">{person.department}</span>

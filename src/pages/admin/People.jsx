@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import ManageTable from '../../components/ManageTable';
 import { StatusBadge } from '../../components/ui';
+import { PersonCell } from '../../components/Avatar';
 import { departments } from '../../data/mockData';
 import { faculty as facultySeed, students as studentsSeed, users as usersSeed } from '../../data/adminData';
 
@@ -12,7 +13,7 @@ export function Students() {
   return (
     <ManageTable title="Students" subtitle="Current students who may become future alumni." noun="Student" items={items} setItems={setItems}
       searchKeys={['name', 'email', 'department']}
-      columns={[{ key: 'name', header: 'Name' }, { key: 'department', header: 'Department' }, { key: 'year', header: 'Year' }, statusCol]}
+      columns={[{ key: 'name', header: 'Name', render: (r) => <PersonCell name={r.name} src={r.photo} sub={r.email} /> }, { key: 'department', header: 'Department' }, { key: 'year', header: 'Year' }, statusCol]}
       fields={[
         { name: 'name', label: 'Full name', required: true },
         { name: 'email', label: 'Email', type: 'email', required: true },
@@ -28,7 +29,7 @@ export function Faculty() {
   return (
     <ManageTable title="Faculty" subtitle="Faculty and staff linked to the alumni community." noun="Faculty member" items={items} setItems={setItems}
       searchKeys={['name', 'email', 'department', 'designation']}
-      columns={[{ key: 'name', header: 'Name' }, { key: 'designation', header: 'Designation' }, { key: 'department', header: 'Department' }, statusCol]}
+      columns={[{ key: 'name', header: 'Name', render: (r) => <PersonCell name={r.name} src={r.photo} sub={r.email} /> }, { key: 'designation', header: 'Designation' }, { key: 'department', header: 'Department' }, statusCol]}
       fields={[
         { name: 'name', label: 'Full name', required: true },
         { name: 'email', label: 'Email', type: 'email', required: true },
@@ -45,7 +46,7 @@ export function UserManagement() {
     <ManageTable title="User management" subtitle="Control who can sign in and what they can do." noun="User" items={items} setItems={setItems}
       searchKeys={['name', 'email', 'role']}
       columns={[
-        { key: 'name', header: 'Name' }, { key: 'email', header: 'Email' },
+        { key: 'name', header: 'Name', render: (r) => <PersonCell name={r.name} src={r.photo} /> }, { key: 'email', header: 'Email' },
         { key: 'role', header: 'Role', render: (r) => <span className="badge">{r.role}</span> },
         { key: 'lastLogin', header: 'Last login' }, statusCol,
       ]}

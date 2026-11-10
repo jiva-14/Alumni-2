@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import '../styles/motion.css';
+import logoUrl from '../assets/mpgi-logo.png';
 
 /* Zero-dependency motion layer: scroll-reveal with stagger, count-up numbers, cursor glow on cards,
    scroll progress bar. Renders nothing visible itself. Disabled for prefers-reduced-motion. */
@@ -68,7 +69,7 @@ function intro() {
   try { if (sessionStorage.getItem('m-intro')) return; sessionStorage.setItem('m-intro', '1'); } catch { /* ignore */ }
   const o = document.createElement('div');
   o.className = 'm-intro';
-  o.innerHTML = '<div class="m-intro__logo">A</div><div class="m-intro__name">Alumni Portal</div><div class="m-intro__bar"><span></span></div>';
+  o.innerHTML = `<img class="m-intro__logo" src="${logoUrl}" width="96" height="96" alt="" draggable="false"><div class="m-intro__name">MPGI Alumni Portal</div><div class="m-intro__bar"><span></span></div>`;
   document.body.appendChild(o);
   setTimeout(() => o.classList.add('is-out'), 1500);
   setTimeout(() => o.remove(), 2200);

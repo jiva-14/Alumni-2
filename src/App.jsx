@@ -22,6 +22,7 @@ const AlumniDashboard = lazy(() => import('./pages/alumni/Dashboard'));
 const MyProfile = lazy(() => import('./pages/alumni/MyProfile'));
 const MyArticles = lazy(() => import('./pages/alumni/MyArticles'));
 const Opportunities = lazy(() => import('./pages/alumni/Opportunities'));
+const MemberEvents = lazy(() => import('./pages/alumni/Events'));
 const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
 const AlumniManagement = lazy(() => import('./pages/admin/AlumniManagement'));
 const EventManagement = lazy(() => import('./pages/admin/EventManagement'));
@@ -90,6 +91,7 @@ export default function App() {
             <Route path="profile" element={<MyProfile />} />
             <Route path="articles" element={<MyArticles />} />
             <Route path="opportunities" element={<Opportunities />} />
+            <Route path="events" element={<MemberEvents />} />
           </Route>
         </Route>
 

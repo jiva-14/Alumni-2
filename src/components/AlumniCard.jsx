@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
+import Avatar from './Avatar';
+import { photoFor } from '../utils/profile';
 import '../styles/directory.css';
-
-const initials = (name = '') => name.split(' ').filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join('');
 
 /**
  * Renders only the fields that exist on the object.
@@ -9,7 +9,7 @@ const initials = (name = '') => name.split(' ').filter(Boolean).slice(0, 2).map(
  */
 export default function AlumniCard({ alumni, to }) {
   const name = alumni.name || alumni.fullName;
-  const photo = alumni.photo || alumni.image || alumni.avatar;
+  const photo = photoFor(alumni);
   const year = alumni.graduationYear || alumni.batch || alumni.year;
   const role = alumni.currentRole || alumni.role || alumni.designation;
   const company = alumni.company || alumni.organization;
@@ -19,9 +19,7 @@ export default function AlumniCard({ alumni, to }) {
   return (
     <article className="card card--hover alumni-card">
       <div className="alumni-card__top">
-        {photo
-          ? <img className="avatar" src={photo} alt={`Portrait of ${name}`} loading="lazy" />
-          : <div className="avatar" aria-hidden="true">{initials(name)}</div>}
+        <Avatar name={name} src={photo} size="md" />
         <div>
           <h3>{name}</h3>
           {(role || company) && <p className="alumni-card__role">{[role, company].filter(Boolean).join(' at ')}</p>}

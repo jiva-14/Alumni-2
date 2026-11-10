@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { Icon } from './ui';
 import BrandLogo from './BrandLogo';
+import Avatar from './Avatar';
 import '../styles/dashboard.css';
 
 const DESKTOP = '(min-width: 861px)';
@@ -98,7 +99,6 @@ export default function Sidebar({
     return t ? flat.filter((l) => l.label.toLowerCase().includes(t)).slice(0, 6) : [];
   }, [flat, q]);
   const goFirst = (e) => { e.preventDefault(); if (results[0]) navigate(results[0].to); };
-  const initials = (user?.name || title).split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 
   return (
     <div className="dash">
@@ -134,7 +134,7 @@ export default function Sidebar({
             <div className="sidebar__foot">
               {user && (
                 <div className="sidebar__user">
-                  <span className="sidebar__avatar" aria-hidden="true">{initials}</span>
+                  <Avatar name={user.name} src={user.photo} size={36} />
                   <span className="sidebar__usertext"><strong>{user.name}</strong><small>{user.role}</small></span>
                 </div>
               )}
@@ -209,7 +209,7 @@ export default function Sidebar({
             )}
             <div className="dd">
               <button className="topbar__avatar topbar__avatar--btn" onClick={() => setMenu(menu === 'profile' ? null : 'profile')} aria-haspopup="true" aria-expanded={menu === 'profile'} aria-label="Account menu">
-                {initials}
+                <Avatar name={user?.name || title} src={user?.photo} size={38} />
               </button>
               {menu === 'profile' && (
                 <div className="dd__panel" role="menu">

@@ -13,6 +13,7 @@ import './styles/dashboard.css';
 import './styles/admin.css';
 import './styles/theme.css';
 import './styles/brand.css';
+import './styles/calm.css';
 import './styles/responsive.css'; // last, so breakpoints win
 
 createRoot(document.getElementById('root')).render(

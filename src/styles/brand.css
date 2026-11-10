@@ -50,7 +50,19 @@ a { color: var(--blue); }
 .input, .select { min-height: var(--field-h); }
 
 /* ---- Logo slots (replace the old letter tiles) ---- */
-.brand-logo { display: block; flex-shrink: 0; width: auto; height: auto; max-width: none; aspect-ratio: 1 / 1; object-fit: contain; border-radius: 50%; }
+/* Fixed square box from --logo-size; flex-shrink:0 + aspect-ratio keep it a true circle, never squashed or stretched. */
+.brand-logo { display: block; flex-shrink: 0; width: var(--logo-size, 44px); height: var(--logo-size, 44px); max-width: none; aspect-ratio: 1 / 1; object-fit: contain; border-radius: 50%; image-rendering: auto; -webkit-user-select: none; user-select: none; }
+.nav__brand { min-width: 0; padding-block: 4px; }
+.nav__brand .brand-logo { --logo-size: 46px; }
+.sidebar__brand .brand-logo { --logo-size: 40px; }
+.sidebar.collapsed .sidebar__brand .brand-logo { --logo-size: 38px; }
+.footer__brand .brand-logo { --logo-size: 56px; }
+.nav__brandtext, .sidebar__brandtext { min-width: 0; }
+.nav__brandtext strong { white-space: nowrap; }
+.nav__brandtext small { white-space: nowrap; }
+@media (max-width: 860px) { .nav__brand .brand-logo { --logo-size: 42px; } }
+@media (max-width: 420px) { .nav__brand .brand-logo { --logo-size: 38px; } .footer__brand .brand-logo { --logo-size: 48px; } .nav__brand { gap: .5rem; } }
+@media (max-width: 340px) { .nav__brandtext { display: none; } }
 .nav__brand, .sidebar__brand { gap: .7rem; }
 .nav__brandtext { display: grid; line-height: 1.15; }
 .nav__brandtext strong { font: 800 .98rem var(--font-display); color: var(--navy-900); letter-spacing: -.005em; }
@@ -58,7 +70,7 @@ a { color: var(--blue); }
 .nav__brand:hover .brand-logo, .sidebar__brand:hover .brand-logo { transform: none; }
 .sidebar__brandtext strong { font-size: .92rem; }
 .sidebar__brandtext small { font-weight: 600; }
-.auth__aside .brand-logo { margin-bottom: var(--space-4); box-shadow: 0 0 0 4px rgba(255,255,255,.14); }
+.auth__aside .brand-logo { margin-bottom: var(--space-4); --logo-size: 84px; }
 .footer__brand { display: flex; gap: .85rem; align-items: center; margin-bottom: var(--space-3); }
 .footer__brand h4 { margin: 0; color: #fff; }
 .footer__brand small { color: #aebbdc; display: block; font-weight: 600; }
